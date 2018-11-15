@@ -18,6 +18,9 @@ install: ## Install dependencies
 build: ## Build chatstatz-webhooks server
 	CGO_ENABLED=0 GOOS=linux go build -o chatstatz-webhooks .
 
+test: ## Run tests
+	CGO_ENABLED=0 go test -v
+
 docker-build: ## Build chatstatz_webhooks image
 	printf "==> Building $(DOCKER_IMAGE) image... "
 	docker build --build-arg GO_VERSION=$(GO_VERSION) -t $(DOCKER_IMAGE):$(BUILD_TAG) . >/dev/null
