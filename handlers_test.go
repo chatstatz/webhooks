@@ -20,19 +20,6 @@ func TestHealthCheckHandler(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusOK, rr.Code)
-	assert.Equal(t, `{"success":true}`, rr.Body.String())
-}
-
-func TestHealthCheckHandlerInvalidMethod(t *testing.T) {
-	rr := httptest.NewRecorder()
-	req, err := http.NewRequest("POST", "/health-check", nil)
-	assert.Nil(t, err)
-
-	handler := http.HandlerFunc(healthCheckHandler)
-	handler.ServeHTTP(rr, req)
-
-	assert.Equal(t, http.StatusMethodNotAllowed, rr.Code)
-	assert.Equal(t, `{"success":false,"message":"method not allowed"}`, rr.Body.String())
 }
 
 func TestTwitchWebhookHandler(t *testing.T) {

@@ -6,16 +6,6 @@ import (
 )
 
 func healthCheckHandler(res http.ResponseWriter, req *http.Request) {
-	res.Header().Set("Content-Type", "application/json")
-
-	if req.Method != http.MethodGet {
-		res.WriteHeader(http.StatusMethodNotAllowed)
-		res.Write([]byte(`{"success":false,"message":"method not allowed"}`))
-		return
-	}
-
-	res.Write([]byte(`{"success":true}`))
-	res.WriteHeader(http.StatusOK)
 }
 
 func twitchWebhookHandler(res http.ResponseWriter, req *http.Request) {
