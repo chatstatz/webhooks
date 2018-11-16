@@ -25,25 +25,16 @@ func twitchWebhookHandler(res http.ResponseWriter, req *http.Request) {
 
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		lerror(err)
-
-		res.WriteHeader(http.StatusInternalServerError)
-		res.Write([]byte(`{"success":false,"message":"failed to read request body"}`))
-		return
+		panic(err)
 	}
 	defer req.Body.Close()
 
 	err = service.PublishMessage(body)
 	if err != nil {
-		lerror(err)
-
-		res.WriteHeader(http.StatusInternalServerError)
-		res.Write([]byte(`{"success":false,"message":"failed to publish message"}`))
-		return
+		panic(err)
 	}
 
 	ldebugf("%s: %s", "Message published", string(body))
 
-	res.WriteHeader(http.StatusOK)
 	res.Write([]byte(`{"success":true}`))
 }

@@ -19,6 +19,7 @@ func TestHealthCheckHandler(t *testing.T) {
 	handler := http.HandlerFunc(healthCheckHandler)
 	handler.ServeHTTP(rr, req)
 
+	assert.Equal(t, "", rr.Header().Get("Content-Type"))
 	assert.Equal(t, http.StatusOK, rr.Code)
 }
 
@@ -37,6 +38,8 @@ func TestTwitchWebhookHandler(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusOK, rr.Code)
+	assert.Equal(t, "application/json", rr.Header().Get("Content-Type"))
+	assert.Equal(t, `{"success":true}`, rr.Body.String())
 	service.(*mocks.Service).AssertExpectations(t)
 }
 
@@ -49,6 +52,8 @@ func TestTwitchWebhookHandlerBadMehtod(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusMethodNotAllowed, rr.Code)
+	assert.Equal(t, "application/json", rr.Header().Get("Content-Type"))
+	assert.Equal(t, `{"success":false,"message":"method not allowed"}`, rr.Body.String())
 }
 
 func TestTwitchWebhookHandlerNilBody(t *testing.T) {
@@ -60,23 +65,23 @@ func TestTwitchWebhookHandlerNilBody(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
+	assert.Equal(t, "application/json", rr.Header().Get("Content-Type"))
+	assert.Equal(t, `{"success":false,"message":"missing request body"}`, rr.Body.String())
 }
 
-func TestTwitchWebhookHandlerFailedToPublishMessage(t *testing.T) {
-	mockBody := []byte(`{"test":"data"}`)
-	mockError := errors.New("bad things happened")
+func TestTwitchWebhookHandlerPublishMessagePanics(t *testing.T) {
+	assert.Panics(t, func() {
+		mockBody := []byte("some data")
+		mockError := errors.New("bad things happened")
 
-	service = &mocks.Service{}
-	service.(*mocks.Service).On("PublishMessage", mockBody).Return(mockError).Once()
+		service = &mocks.Service{}
+		service.(*mocks.Service).On("PublishMessage", mockBody).Return(mockError).Once()
+		defer service.(*mocks.Service).AssertExpectations(t)
 
-	bufBody := bytes.NewBuffer(mockBody)
-	rr := httptest.NewRecorder()
-	req, err := http.NewRequest("POST", "/twitch/webhooks", bufBody)
-	assert.Nil(t, err)
+		req, err := http.NewRequest("POST", "/twitch/webhooks", bytes.NewBuffer(mockBody))
+		assert.Nil(t, err)
 
-	handler := http.HandlerFunc(twitchWebhookHandler)
-	handler.ServeHTTP(rr, req)
-
-	assert.Equal(t, http.StatusInternalServerError, rr.Code)
-	service.(*mocks.Service).AssertExpectations(t)
+		handler := http.HandlerFunc(twitchWebhookHandler)
+		handler.ServeHTTP(httptest.NewRecorder(), req)
+	})
 }
