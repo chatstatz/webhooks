@@ -1,13 +1,8 @@
-# Versions
 GO_VERSION=1.11.2
-
-# General
+IMAGE_TAG=latest
+IMAGE_NAME=chatstatz_webhooks
+GCLOUD_HOST=asia.gcr.io
 GCLOUD_PROJECT=chatstatz-project
-BUILD_TAG=latest
-
-# Docker
-DOCKER_HOST=asia.gcr.io
-DOCKER_IMAGE=chatstatz_webhooks
 
 .DEFAULT_GOAL=.help
 .SILENT: ;
@@ -22,14 +17,14 @@ test: ## Run tests
 	CGO_ENABLED=0 go test -v
 
 docker-build: ## Build chatstatz_webhooks image
-	printf "==> Building $(DOCKER_IMAGE) image... "
-	docker build --build-arg GO_VERSION=$(GO_VERSION) -t $(DOCKER_IMAGE):$(BUILD_TAG) . >/dev/null
+	printf "==> Building $(IMAGE_NAME) image... "
+	docker build --build-arg GO_VERSION=$(GO_VERSION) -t $(IMAGE_NAME):$(IMAGE_TAG) . >/dev/null
 	printf "Done.\r\n"
 
 docker-push: ## Publish chatstatz_webhooks images to repository
-	printf "==> Tagging and pushing $(DOCKER_IMAGE) image... "
-	docker tag $(DOCKER_IMAGE) $(DOCKER_HOST)/$(GCLOUD_PROJECT)/$(DOCKER_IMAGE):$(BUILD_TAG)
-	docker push $(DOCKER_HOST)/$(GCLOUD_PROJECT)/$(DOCKER_IMAGE):$(BUILD_TAG) >/dev/null
+	printf "==> Tagging and pushing $(IMAGE_NAME) image... "
+	docker tag $(IMAGE_NAME) $(GCLOUD_HOST)/$(GCLOUD_PROJECT)/$(IMAGE_NAME):$(IMAGE_TAG)
+	docker push $(GCLOUD_HOST)/$(GCLOUD_PROJECT)/$(IMAGE_NAME):$(IMAGE_TAG) >/dev/null
 	printf "Done.\r\n"
 
 .help:
