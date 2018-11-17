@@ -1,0 +1,3 @@
+[submodule "chatstatz-scripts"]
+	path = chatstatz-scripts
+	url = git@github.com:nicklaw5/chatstatz-scripts.git
