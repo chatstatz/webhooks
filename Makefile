@@ -27,5 +27,10 @@ docker-push: ## Publish chatstatz_webhooks images to repository
 	docker push $(GCLOUD_HOST)/$(GCLOUD_PROJECT)/$(IMAGE_NAME):$(IMAGE_TAG) >/dev/null
 	printf "Done.\r\n"
 
+gcloud-delete-untagged-images:
+	GCLOUD_HOST=$(GCLOUD_HOST) \
+		GCLOUD_PROJECT=$(GCLOUD_PROJECT) \
+		IMAGE_NAME=$(IMAGE_NAME) \
+		./chatstatz-scripts/google-cloud/remove_untagged_container_images.sh
 .help:
 	grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}'
