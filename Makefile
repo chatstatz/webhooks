@@ -1,8 +1,8 @@
 GO_VERSION=1.11.2
 IMAGE_TAG=latest
 IMAGE_NAME=chatstatz_webhooks
-GCLOUD_HOST=asia.gcr.io
-GCLOUD_PROJECT=chatstatz-project
+GCLOUD_CONTAINER_HOST=asia.gcr.io
+GCLOUD_PROJECT_ID=chatstatz-project
 
 .DEFAULT_GOAL=.help
 .SILENT: ;
@@ -23,13 +23,13 @@ docker-build: ## Build chatstatz_webhooks image
 
 docker-push: ## Publish chatstatz_webhooks images to repository
 	printf "==> Tagging and pushing $(IMAGE_NAME) image... "
-	docker tag $(IMAGE_NAME) $(GCLOUD_HOST)/$(GCLOUD_PROJECT)/$(IMAGE_NAME):$(IMAGE_TAG)
-	docker push $(GCLOUD_HOST)/$(GCLOUD_PROJECT)/$(IMAGE_NAME):$(IMAGE_TAG) >/dev/null
+	docker tag $(IMAGE_NAME) $(GCLOUD_CONTAINER_HOST)/$(GCLOUD_PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG)
+	docker push $(GCLOUD_CONTAINER_HOST)/$(GCLOUD_PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG) >/dev/null
 	printf "Done.\r\n"
 
-gcloud-delete-untagged-images:
-	GCLOUD_HOST=$(GCLOUD_HOST) \
-		GCLOUD_PROJECT=$(GCLOUD_PROJECT) \
+gcloud-delete-untagged-images: ## Delete untagged chatstatz_webhooks GCR images
+	GCLOUD_CONTAINER_HOST=$(GCLOUD_CONTAINER_HOST) \
+		GCLOUD_PROJECT_ID=$(GCLOUD_PROJECT_ID) \
 		IMAGE_NAME=$(IMAGE_NAME) \
 		./chatstatz-scripts/google-cloud/remove_untagged_container_images.sh
 .help:

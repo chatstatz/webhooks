@@ -29,10 +29,11 @@ gcloud auth configure-docker
 ### Make Commands
 
 ```txt
-make                List commands
-make install        Install dependencies
-make test           Run tests
-make build          Build chatstatz-webhooks server
-make docker-build   Build chatstatz_webhooks image
-make docker-push    Publish chatstatz_webhooks images to repository
+make                            List commands
+make install                    Install dependencies
+make test                       Run tests
+make build                      Build chatstatz-webhooks server
+make docker-build               Build chatstatz_webhooks image
+make docker-push                Publish chatstatz_webhooks images to repository
+gcloud-delete-untagged-images   Delete untagged chatstatz_webhooks GCR images
 ```
