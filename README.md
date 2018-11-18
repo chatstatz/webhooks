@@ -10,7 +10,21 @@ pushes event payloads to the message for consumption by the ACP server.
 ### Prerequisites
 
 - Docker
+- Google Cloud CLI tool
 - Go v1.11 or greater
+
+### Setup Commands
+
+```bash
+# Login in to your GCP account
+glcoud auth login
+
+# Change project to "chatstatz-project" if not already configured
+gcloud config set project "chatstatz-project"
+
+# Configure Docker to use gcloud as a credentials helper
+gcloud auth configure-docker
+```
 
 ### Make Commands
 
