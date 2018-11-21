@@ -1,0 +1,8 @@
+steps:
+- name: "golang:${_GO_VERSION}"
+  args: ["make", "install"]
+- name: "golang:${_GO_VERSION}"
+  args: ["make", "test"]
+substitutions:
+  _GO_VERSION: 1.11.2
+timeout: 120s
