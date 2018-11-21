@@ -1,8 +1,6 @@
 steps:
 - name: "golang:${_GO_VERSION}"
-  args: ["make", "install"]
-- name: "golang:${_GO_VERSION}"
-  args: ["make", "test"]
+  args: ["scripts/run_tests.sh"]
 substitutions:
   _GO_VERSION: 1.11.2
 timeout: 120s
