@@ -22,7 +22,7 @@ type route struct {
 }
 
 var routes = []route{
-	route{"/health-check", healthCheckHandler},
+	route{"/healthz", healthCheckHandler},
 	route{"/twitch/webhooks", twitchWebhookHandler},
 }
 

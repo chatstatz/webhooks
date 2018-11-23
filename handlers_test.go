@@ -13,7 +13,7 @@ import (
 
 func TestHealthCheckHandler(t *testing.T) {
 	rr := httptest.NewRecorder()
-	req, err := http.NewRequest("GET", "/health-check", nil)
+	req, err := http.NewRequest("GET", "/healthz", nil)
 	assert.Nil(t, err)
 
 	handler := http.HandlerFunc(healthCheckHandler)
