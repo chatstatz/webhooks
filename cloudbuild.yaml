@@ -1,6 +1,4 @@
 steps:
-- name: "golang:${_GO_VERSION}"
-  args: ["scripts/run_tests.sh"]
 - name: "gcr.io/cloud-builders/docker"
   args: ["build", "--build-arg", "GO_VERSION=${_GO_VERSION}", "-t", "${_GCLOUD_CONTAINER_HOST}/$PROJECT_ID/${_IMAGE_NAME}", "."]
 images:

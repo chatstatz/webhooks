@@ -4,6 +4,7 @@ FROM golang:${GO_VERSION} as builder
 WORKDIR /build
 COPY . ./
 RUN make install
+RUN make test
 RUN make build
 
 FROM alpine:latest
