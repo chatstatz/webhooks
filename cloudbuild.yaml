@@ -1,6 +1,12 @@
 steps:
 - name: "golang:${_GO_VERSION}"
   args: ["scripts/run_tests.sh"]
+- name: "gcr.io/cloud-builders/docker"
+  args: ["build", "--build-arg", "GO_VERSION=${_GO_VERSION}", "-t", "${_GCLOUD_CONTAINER_HOST}/$PROJECT_ID/${_IMAGE_NAME}", "."]
+images:
+- "${_GCLOUD_CONTAINER_HOST}/$PROJECT_ID/${_IMAGE_NAME}"
 substitutions:
   _GO_VERSION: 1.11.2
+  _GCLOUD_CONTAINER_HOST: asia.gcr.io
+  _IMAGE_NAME: chatstatz_webhooks
 timeout: 120s
