@@ -8,7 +8,7 @@ GCLOUD_PROJECT_ID=chatstatz-project
 .SILENT: ;
 
 install: ## Install dependencies
-	CGO_ENABLED=0 go get
+	CGO_ENABLED=0 go get ./...
 
 build: ## Build chatstatz-webhooks server
 	CGO_ENABLED=0 GOOS=linux go build -o chatstatz-webhooks .
