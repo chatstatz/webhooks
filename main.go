@@ -19,7 +19,7 @@ const (
 // Default CLI options
 var (
 	host        = "0.0.0.0"
-	port        = 5994
+	port        = 8080
 	mqHost      = "nats://0.0.0.0:4222"
 	mqQueue     = "webhooks"
 	verbose     = false
