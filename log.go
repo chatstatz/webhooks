@@ -25,11 +25,15 @@ func println(l string, v ...interface{}) {
 }
 
 func ldebug(v ...interface{}) {
-	println(DEBUG, v...)
+	if verbose {
+		println(DEBUG, v...)
+	}
 }
 
 func ldebugf(f string, v ...interface{}) {
-	ldebug(fmt.Sprintf(f, v...))
+	if verbose {
+		ldebug(fmt.Sprintf(f, v...))
+	}
 }
 
 func linfo(v ...interface{}) {
