@@ -11,7 +11,7 @@ pushes event payloads to the message for consumption by the ACP server.
 
 - Docker
 - Google Cloud CLI tool
-- Go v1.11 or greater
+- Go v1.13 or greater
 
 ### Setup Commands
 

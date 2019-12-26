@@ -1,4 +1,4 @@
-GO_VERSION=1.11.2
+GO_VERSION=1.13.5
 IMAGE_TAG=latest
 IMAGE_NAME=chatstatz_webhooks
 GCLOUD_CONTAINER_HOST=asia.gcr.io
