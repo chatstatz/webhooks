@@ -4,14 +4,16 @@ IMAGE_NAME=chatstatz-webhooks
 GCLOUD_CONTAINER_HOST=gcr.io
 GCLOUD_PROJECT_ID=chatstatz-project
 
-.DEFAULT_GOAL=.help
 .SILENT: ;
+
+default:
+	echo "TODO..."
 
 install: ## Install dependencies
 	CGO_ENABLED=0 go get ./...
 
 build: ## Build chatstatz-webhooks server
-	CGO_ENABLED=0 GOOS=linux go build -o chatstatz-webhooks .
+	CGO_ENABLED=0 GOOS=linux go build -o build/chatstatz-webhooks .
 
 test: ## Run tests
 	CGO_ENABLED=0 go test -v
