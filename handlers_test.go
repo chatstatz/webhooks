@@ -9,7 +9,7 @@ import (
 
 	"github.com/nicklaw5/helix"
 
-	"github.com/nicklaw5/chatstatz-webhooks/mocks"
+	"github.com/chatstatz/webhooks/mocks"
 	"github.com/stretchr/testify/assert"
 )
 

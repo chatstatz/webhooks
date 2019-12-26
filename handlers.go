@@ -43,7 +43,7 @@ func handleWebhookGetRequest(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// TODO: Verify subscription request is valid
-	// See https://github.com/nicklaw5/chatstatz-webhooks/issues/3
+	// See https://github.com/chatstatz/webhooks/issues/3
 	res.Write([]byte(keys[0]))
 }
 
