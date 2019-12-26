@@ -1,7 +1,7 @@
 GO_VERSION=1.13.5
 IMAGE_TAG=latest
 IMAGE_NAME=chatstatz_webhooks
-GCLOUD_CONTAINER_HOST=asia.gcr.io
+GCLOUD_CONTAINER_HOST=gcr.io
 GCLOUD_PROJECT_ID=chatstatz-project
 
 .DEFAULT_GOAL=.help
