@@ -39,7 +39,9 @@ Options:
   --help             show help
 `, appName, host, port, mqHost, mqQueue, appName)
 
-func init() {
+var service ServiceInterface
+
+func main() {
 	flag.StringVar(&host, "h", host, "the host to expose this service on")
 	flag.IntVar(&port, "p", port, "the port to run this server on")
 	flag.StringVar(&mqHost, "mqh", mqHost, "the message queue host server.")
@@ -49,11 +51,7 @@ func init() {
 
 	flag.Usage = usage
 	flag.Parse()
-}
 
-var service ServiceInterface
-
-func main() {
 	if showVersion {
 		printVersion()
 	}
