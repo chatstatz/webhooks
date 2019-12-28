@@ -1,4 +1,4 @@
-package main
+package http
 
 import (
 	"io/ioutil"
@@ -8,29 +8,27 @@ import (
 	"github.com/nicklaw5/helix"
 )
 
-func healthCheckHandler(res http.ResponseWriter, req *http.Request) {
+func (s *Server) healthCheckHandler(res http.ResponseWriter, req *http.Request) {
 	// returns 200 OK by default
 }
 
-func twitchWebhookHandler(res http.ResponseWriter, req *http.Request) {
-	if verbose {
-		dumpReq, err := httputil.DumpRequest(req, true)
-		if err != nil {
-			panic(err)
-		}
-		ldebugf("%+v", string(dumpReq))
+func (s *Server) twitchWebhookHandler(res http.ResponseWriter, req *http.Request) {
+	dumpReq, err := httputil.DumpRequest(req, true)
+	if err != nil {
+		panic(err)
 	}
+	s.ctx.Logger.Debugf("%+v", string(dumpReq))
 
 	if req.Method == http.MethodGet {
-		handleWebhookGetRequest(res, req)
+		s.handleWebhookGetRequest(res, req)
 	}
 
 	if req.Method == http.MethodPost {
-		handleWebhookPostRequest(res, req)
+		s.handleWebhookPostRequest(res, req)
 	}
 }
 
-func handleWebhookGetRequest(res http.ResponseWriter, req *http.Request) {
+func (s *Server) handleWebhookGetRequest(res http.ResponseWriter, req *http.Request) {
 	keys, ok := req.URL.Query()["hub.challenge"]
 
 	if !ok || len(keys[0]) < 1 {
@@ -38,24 +36,22 @@ func handleWebhookGetRequest(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if verbose {
-		ldebugf("hub.challenge value: %s", keys[0])
-	}
+	s.ctx.Logger.Debugf("hub.challenge value: %s", keys[0])
 
 	// TODO: Verify subscription request is valid
 	// See https://github.com/chatstatz/webhooks/issues/3
 	res.Write([]byte(keys[0]))
 }
 
-func handleWebhookPostRequest(res http.ResponseWriter, req *http.Request) {
+func (s *Server) handleWebhookPostRequest(res http.ResponseWriter, req *http.Request) {
 	linkHeader := req.Header.Get("link")
-	ldebugf("Link Header: %s", linkHeader)
+	s.ctx.Logger.Debugf("Link Header: %s", linkHeader)
 
 	webhookTopic := helix.GetWebhookTopicFromRequest(req)
-	ldebugf("Topic: %+v", webhookTopic)
+	s.ctx.Logger.Debugf("Topic: %+v", webhookTopic)
 
 	webhookTopicValues := helix.GetWebhookTopicValuesFromRequest(req, -1)
-	ldebugf("Topic Values: %+v", webhookTopicValues)
+	s.ctx.Logger.Debugf("Topic Values: %+v", webhookTopicValues)
 
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -63,7 +59,7 @@ func handleWebhookPostRequest(res http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 
-	event := &webhookEvent{
+	event := &WebhookEvent{
 		Topic:       webhookTopic,
 		TopicValues: webhookTopicValues,
 		Payload:     string(body),
@@ -74,10 +70,10 @@ func handleWebhookPostRequest(res http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 
-	err = service.PublishMessage(eventBytes)
+	err = s.ctx.Producer.PublishMessage(eventBytes)
 	if err != nil {
 		panic(err)
 	}
 
-	ldebugf("%s: %s", "Message published", string(eventBytes))
+	s.ctx.Logger.Debugf("%s: %s", "Message published", string(eventBytes))
 }

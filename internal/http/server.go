@@ -1,40 +1,36 @@
-package main
+package http
 
 import (
 	"log"
 	"net"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
+	"github.com/chatstatz/webhooks/internal"
 	"github.com/urfave/negroni"
 )
 
-// ServerInterface ...
-type ServerInterface interface {
-	ListenAndServe() error
+// Server ...
+type Server struct {
+	ctx *internal.Context
 }
 
-type route struct {
-	Path    string
-	Handler func(http.ResponseWriter, *http.Request)
-}
+// // IServer ...
+// type IServer interface {
+// 	ListenAndServe() error
+// }
 
-var routes = []route{
-	route{"/healthz", healthCheckHandler},
-	route{"/twitch/webhooks", twitchWebhookHandler},
-}
-
-func newServer(host string, port int) *http.Server {
+// NewServer creates a new HTTP server.
+func NewServer(ctx *internal.Context, host, port string) *http.Server {
+	server := &Server{ctx}
 	mux := http.NewServeMux()
 
-	for _, route := range routes {
-		mux.HandleFunc(route.Path, route.Handler)
-	}
+	mux.HandleFunc("/healhtz", server.healthCheckHandler)
+	mux.HandleFunc("/twitch/webhooks", server.handleWebhookPostRequest)
 
 	return &http.Server{
-		Addr:         net.JoinHostPort(host, strconv.Itoa(port)),
+		Addr:         net.JoinHostPort(host, port),
 		Handler:      middlewareWrapper(mux),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
