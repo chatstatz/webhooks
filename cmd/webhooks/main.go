@@ -45,24 +45,33 @@ var (
 )
 
 var usageHelp = `
-Usage: %s [options]
+Usage: chatstatz-webhooks [flags]
 
 Options:
-  -v                    print the %s version
-  --help                show help
+  --version     print the version
+  --list-env    list expected environment variables and their default values
+  --help        show help
 `
 
 func main() {
 	logger := logger.New(EnvLogLevel, os.Stderr)
 	logger.Debugf("Environment Variables: %s", strings.Join(os.Environ(), " "))
 
-	var printVersion bool
-	flag.BoolVar(&printVersion, "v", false, "show webhooks version.")
+	var showVersion bool
+	var listEnvVars bool
+
+	flag.BoolVar(&showVersion, "version", false, "show webhooks version")
+	flag.BoolVar(&listEnvVars, "list-env", false, "list expected environment variables and their default values")
+
 	flag.Usage = usage
 	flag.Parse()
 
-	if printVersion {
-		showVersion()
+	if showVersion {
+		printVersion()
+	}
+
+	if listEnvVars {
+		printEnvVars()
 	}
 
 	quit := make(chan os.Signal, 1)
@@ -97,7 +106,18 @@ func usage() {
 	os.Exit(0)
 }
 
-func showVersion() {
+func printVersion() {
 	fmt.Printf("%s v%s\n", appName, version)
+	os.Exit(0)
+}
+
+func printEnvVars() {
+	fmt.Printf(`WEBHOOKS_HOST	The host that the  webhooks server should run on (default: 127.0.0.1)
+WEBHOOKS_PORT	The port that the webhooks server should be served on (default: 8080)
+NATS_HOST	The NATS host address for NATS clients to connect to (default: 0.0.0.0)
+NATS_PORT	The NATS port for NATS clients to connect on (default: 4222)
+NATS_QUEUE	The NATS queue for which to publish messages to (default: twitch_channels)
+LOG_LEVEL	The log level to start logging from (default: info)
+`)
 	os.Exit(0)
 }

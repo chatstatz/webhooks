@@ -3,6 +3,20 @@
 The webhooks service listens for subscribed Twitch webhook events and
 pushes event payloads to the NATS message queue.
 
+## Environment Variables
+
+This application uses environment variables for configurations.
+Below are all expected variables and their default values.
+
+| Variable | Default | Description |
+|:---------|:-------:|:------------|
+| `WEBHOOKS_HOST` | `127.0.0.1` | The host that the  webhooks server should run on |
+| `WEBHOOKS_PORT` | `8080` | The port that the webhooks server should be served on |
+| `NATS_HOST` | `0.0.0.0` | The NATS host address for NATS clients to connect to |
+| `NATS_PORT` | `4222` | The NATS port for NATS clients to connect on |
+| `NATS_QUEUE` | `twitch_channels` | The NATS queue for which to publish messages to |
+| `LOG_LEVEL` | `info` | The log level to start logging from (see [here](https://github.com/chatstatz/logger)) |
+
 ## Development
 
 ### Prerequisites
