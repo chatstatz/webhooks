@@ -1,40 +1,31 @@
-package main
+package http
 
 import (
 	"log"
 	"net"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
+	"github.com/chatstatz/webhooks/internal/context"
 	"github.com/urfave/negroni"
 )
 
-// ServerInterface ...
-type ServerInterface interface {
-	ListenAndServe() error
+// Server ...
+type Server struct {
+	ctx *context.Context
 }
 
-type route struct {
-	Path    string
-	Handler func(http.ResponseWriter, *http.Request)
-}
-
-var routes = []route{
-	route{"/healthz", healthCheckHandler},
-	route{"/twitch/webhooks", twitchWebhookHandler},
-}
-
-func newServer(host string, port int) *http.Server {
+// NewServer creates a new HTTP server.
+func NewServer(ctx *context.Context, host, port string) *http.Server {
+	server := &Server{ctx}
 	mux := http.NewServeMux()
 
-	for _, route := range routes {
-		mux.HandleFunc(route.Path, route.Handler)
-	}
+	mux.HandleFunc("/healhtz", server.healthCheckHandler)
+	mux.HandleFunc("/twitch/webhooks", server.handleWebhookPostRequest)
 
 	return &http.Server{
-		Addr:         net.JoinHostPort(host, strconv.Itoa(port)),
+		Addr:         net.JoinHostPort(host, port),
 		Handler:      middlewareWrapper(mux),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
@@ -56,6 +47,9 @@ type PanicFormatter struct{}
 
 // FormatPanicError formats the response for a given panic.
 func (pf *PanicFormatter) FormatPanicError(rw http.ResponseWriter, r *http.Request, infos *negroni.PanicInformation) {
+
+	// TODO: log panic error and stack
+
 	rw.Header().Set("Content-Type", "application/json") // See https://github.com/urfave/negroni/issues/241
 	rw.Write([]byte(`{"success":"false","message":"Internal Server Error"}`))
 }
