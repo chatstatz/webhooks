@@ -47,6 +47,9 @@ type PanicFormatter struct{}
 
 // FormatPanicError formats the response for a given panic.
 func (pf *PanicFormatter) FormatPanicError(rw http.ResponseWriter, r *http.Request, infos *negroni.PanicInformation) {
+
+	// TODO: log panic error and stack
+
 	rw.Header().Set("Content-Type", "application/json") // See https://github.com/urfave/negroni/issues/241
 	rw.Write([]byte(`{"success":"false","message":"Internal Server Error"}`))
 }

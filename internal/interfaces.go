@@ -7,7 +7,7 @@ type IServer interface {
 
 // IProducer ...
 type IProducer interface {
-	PublishMessage([]byte) error
+	PublishMessage(data []byte) error
 	CloseConn()
 }
 

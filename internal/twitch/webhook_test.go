@@ -3,9 +3,8 @@ package twitch
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/nicklaw5/helix"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestToBytes(t *testing.T) {

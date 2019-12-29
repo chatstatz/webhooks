@@ -1,34 +1,32 @@
 package internal
 
-// Service ...
-type Service struct {
+// WebhooksService ...
+type WebhooksService struct {
 	svr IServer
 	pdr IProducer
 }
 
-// NewService ...
-func NewService(server IServer, producer IProducer) *Service {
-	service := &Service{
+// NewWebhooksService ...
+func NewWebhooksService(server IServer, producer IProducer) *WebhooksService {
+	return &WebhooksService{
 		svr: server,
 		pdr: producer,
 	}
-
-	return service
 }
 
 // Start starts the service. Start will block.
-func (s *Service) Start() error {
+func (s *WebhooksService) Start() error {
 	return s.svr.ListenAndServe()
 }
 
 // Stop attempts to gracefully stop the service. It also
 // closes any open connection that remains to the producer.
-func (s *Service) Stop() {
+func (s *WebhooksService) Stop() {
 	s.pdr.CloseConn()
 }
 
 // PublishMessage ...
-func (s *Service) PublishMessage(data []byte) error {
+func (s *WebhooksService) PublishMessage(data []byte) error {
 	err := s.pdr.PublishMessage(data)
 	if err != nil {
 		return err

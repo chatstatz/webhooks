@@ -4,7 +4,7 @@ import (
 	m "github.com/stretchr/testify/mock"
 )
 
-// HTTPServer is a mock server.
+// HTTPServer is a mock server that represents Go's http.Server.
 type HTTPServer struct {
 	m.Mock
 }

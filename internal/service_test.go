@@ -1,56 +1,66 @@
 package internal
 
-// func TestNewServer(t *testing.T) {
-// 	mockHost := "127.0.0.0"
-// 	mockPort := "9999"
+import (
+	"errors"
+	"testing"
 
-// 	server := http.NewServer(mockHost, mockPort)
+	"github.com/stretchr/testify/assert"
 
-// 	assert.Equal(t, server.Addr, net.JoinHostPort(mockHost, mockPort))
-// }
+	"github.com/chatstatz/webhooks/test/mock"
+)
 
-// func TestServiceStart(t *testing.T) {
-// 	mockHTTPServer := new(mocks.HTTPServer)
-// 	mockHTTPServer.On("ListenAndServe").Return(nil).Once()
+func TestNewService(t *testing.T) {
+	mServer := &mock.HTTPServer{}
+	mProducer := &mock.Producer{}
 
-// 	service := NewService(mockHTTPServer, nil)
-// 	service.Start()
+	s := NewWebhooksService(mServer, mProducer)
 
-// 	mockHTTPServer.AssertExpectations(t)
-// }
+	assert.Equal(t, mServer, s.svr)
+	assert.Equal(t, mProducer, s.pdr)
+}
 
-// func TestServiceStop(t *testing.T) {
-// 	mockProducer := new(mocks.Producer)
-// 	mockProducer.On("CloseConn").Once()
+func TestServiceStart(t *testing.T) {
+	mHTTPServer := &mock.HTTPServer{}
+	mHTTPServer.On("ListenAndServe").Return(nil).Once()
 
-// 	service := NewService(nil, mockProducer)
-// 	service.Stop()
+	s := NewWebhooksService(mHTTPServer, nil)
+	s.Start()
 
-// 	mockProducer.AssertExpectations(t)
-// }
+	mHTTPServer.AssertExpectations(t)
+}
 
-// func TestServicePublishMessage(t *testing.T) {
-// 	mockData := []byte("Some test data")
+func TestServiceStop(t *testing.T) {
+	mProducer := &mock.Producer{}
+	mProducer.On("CloseConn").Once()
 
-// 	mockProducer := new(mocks.Producer)
-// 	mockProducer.On("PublishMessage", mockData).Return(nil).Once()
+	s := NewWebhooksService(nil, mProducer)
+	s.Stop()
 
-// 	service := NewService(nil, mockProducer)
-// 	service.PublishMessage(mockData)
+	mProducer.AssertExpectations(t)
+}
 
-// 	mockProducer.AssertExpectations(t)
-// }
+func TestServicePublishMessage(t *testing.T) {
+	mockData := []byte("Some test data")
 
-// func TestServicePublishMessageError(t *testing.T) {
-// 	errMsg := "Oops something went wrong :("
-// 	mockData := []byte("Some test data")
+	mProducer := &mock.Producer{}
+	mProducer.On("PublishMessage", mockData).Return(nil).Once()
 
-// 	mockProducer := new(mocks.Producer)
-// 	mockProducer.On("PublishMessage", mockData).Return(errors.New(errMsg)).Once()
+	service := NewWebhooksService(nil, mProducer)
+	service.PublishMessage(mockData)
 
-// 	service := NewService(nil, mockProducer)
-// 	err := service.PublishMessage(mockData)
+	mProducer.AssertExpectations(t)
+}
 
-// 	assert.EqualError(t, err, errMsg)
-// 	mockProducer.AssertExpectations(t)
-// }
+func TestServicePublishMessageError(t *testing.T) {
+	errMsg := "Oops something went wrong :("
+	mockData := []byte("Some test data")
+
+	mProducer := &mock.Producer{}
+	mProducer.On("PublishMessage", mockData).Return(errors.New(errMsg)).Once()
+
+	service := NewWebhooksService(nil, mProducer)
+	err := service.PublishMessage(mockData)
+
+	assert.EqualError(t, err, errMsg)
+	mProducer.AssertExpectations(t)
+}

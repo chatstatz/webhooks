@@ -86,7 +86,7 @@ func main() {
 	ctx := context.NewContext(logger, producer)
 
 	httpServer := http.NewServer(ctx, EnvWebhooksHost, EnvWebhooksPort)
-	service := internal.NewService(httpServer, producer)
+	service := internal.NewWebhooksService(httpServer, producer)
 
 	go func() {
 		logger.Infof("Starting %s server on %s", appName, httpServer.Addr)
