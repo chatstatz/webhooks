@@ -1,80 +1,65 @@
 package nats
 
 import (
+	"errors"
 	"testing"
 
-	"github.com/chatstatz/webhooks/mocks"
+	"github.com/chatstatz/webhooks/test/mock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewProducer(t *testing.T) {
-	mockHost := "http://blah.blah"
-	mockQueue := "webhooks"
-	mockConn := &mocks.ProducerConn{}
+	mQueue := "webhooks"
+	mConn := &mock.ProducerConn{}
+	producer := NewProducer(mConn, mQueue)
 
-	mockProducer := &Producer{
-		conn:  mockConn,
-		host:  mockHost,
-		queue: mockQueue,
-	}
-
-	producer, err := NewProducer(mockHost, mockQueue)
-
-	assert.NoError(t, err)
-	assert.Equal(t, mockProducer, producer)
+	assert.Equal(t, mConn, producer.conn)
+	assert.Equal(t, mQueue, producer.queue)
 }
 
-// func TestNewProducerError(t *testing.T) {
-// 	errMsg := "Faield to connect to nats producer"
+func TestProducerPublishMessage(t *testing.T) {
+	queueName := "webhooks"
+	mockData := []byte("Some test data")
 
-// 	producer, err := NewProducer("", "")
+	mProducerConn := &mock.ProducerConn{}
+	mProducerConn.On("Publish", queueName, mockData).Return(nil).Once()
 
-// 	assert.Nil(t, producer)
-// 	assert.EqualError(t, err, errMsg)
-// }
+	producer := &Producer{
+		conn:  mProducerConn,
+		queue: queueName,
+	}
 
-// func TestProducerPublishMessage(t *testing.T) {
-// 	queueName := "webhooks"
-// 	mockData := []byte("Some test data")
+	producer.PublishMessage(mockData)
 
-// 	mockProducerConn := new(mocks.ProducerConn)
-// 	mockProducerConn.On("Publish", queueName, mockData).Return(nil).Once()
+	mProducerConn.AssertExpectations(t)
+}
 
-// 	producer := &Producer{
-// 		conn:  mockProducerConn,
-// 		queue: queueName,
-// 	}
-// 	producer.PublishMessage(mockData)
+func TestProducerPublishMessageError(t *testing.T) {
+	queueName := "webhooks"
+	mockData := []byte("Some test data")
+	errMsg := "Oops something went wrong :("
 
-// 	mockProducerConn.AssertExpectations(t)
-// }
+	mProducerConn := &mock.ProducerConn{}
+	mProducerConn.On("Publish", queueName, mockData).Return(errors.New(errMsg)).Once()
 
-// func TestProducerPublishMessageError(t *testing.T) {
-// 	queueName := "webhooks"
-// 	mockData := []byte("Some test data")
-// 	errMsg := "Oops something went wrong :("
+	producer := &Producer{
+		conn:  mProducerConn,
+		queue: queueName,
+	}
+	err := producer.PublishMessage(mockData)
+	assert.EqualError(t, err, errMsg)
 
-// 	mockProducerConn := new(mocks.ProducerConn)
-// 	mockProducerConn.On("Publish", queueName, mockData).Return(errors.New(errMsg)).Once()
+	mProducerConn.AssertExpectations(t)
+}
 
-// 	producer := &Producer{
-// 		conn:  mockProducerConn,
-// 		queue: queueName,
-// 	}
-// 	err := producer.PublishMessage(mockData)
-// 	assert.EqualError(t, err, errMsg)
+func TestProducerCloseConn(t *testing.T) {
+	mProducerConn := &mock.ProducerConn{}
+	mProducerConn.On("Close").Once()
 
-// 	mockProducerConn.AssertExpectations(t)
-// }
+	producer := &Producer{
+		conn: mProducerConn,
+	}
+	producer.CloseConn()
 
-// func TestProducerCloseConn(t *testing.T) {
-// 	mockProducerConn := new(mocks.ProducerConn)
-// 	mockProducerConn.On("Close").Once()
-
-// 	producer := &Producer{
-// 		conn: mockProducerConn,
-// 	}
-// 	producer.CloseConn()
-
-// 	mockProducerConn.AssertExpectations(t)
-// }
+	mProducerConn.AssertExpectations(t)
+}

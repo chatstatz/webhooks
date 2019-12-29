@@ -11,12 +11,6 @@ type IProducer interface {
 	CloseConn()
 }
 
-// // IProducerConn ...
-// type IProducerConn interface {
-// 	Publish(string, []byte) error
-// 	Close()
-// }
-
 // ServiceInterface ...
 type ServiceInterface interface {
 	Start() error

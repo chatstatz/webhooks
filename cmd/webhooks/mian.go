@@ -6,12 +6,16 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"time"
 
 	"github.com/chatstatz/logger"
 	"github.com/chatstatz/webhooks/internal"
+	"github.com/chatstatz/webhooks/internal/context"
 	"github.com/chatstatz/webhooks/internal/http"
 	"github.com/chatstatz/webhooks/internal/nats"
 	"github.com/chatstatz/webhooks/tools"
+
+	natsc "github.com/nats-io/nats.go"
 )
 
 // Application info
@@ -64,15 +68,13 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 
-	producer, err := nats.NewProducer(NatsHostDefault, NatsPortDefault)
+	conn, err := natsc.Connect(NatsHostDefault, natsc.Timeout(3*time.Second))
 	if err != nil {
-		logger.Fatalf("Failed to estasblish a connection for producer: %s", err.Error())
+		logger.Fatalf("Failed to estasblish a connection to NATS: %s", err.Error())
 	}
 
-	ctx := &internal.Context{
-		Logger:   logger,
-		Producer: producer,
-	}
+	producer := nats.NewProducer(conn, NatsPortDefault)
+	ctx := context.NewContext(logger, producer)
 
 	httpServer := http.NewServer(ctx, EnvWebhooksHost, EnvWebhooksPort)
 	service := internal.NewService(httpServer, producer)

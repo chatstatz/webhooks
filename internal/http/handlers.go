@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
+	"github.com/chatstatz/webhooks/internal/twitch"
+
 	"github.com/nicklaw5/helix"
 )
 
@@ -59,7 +61,7 @@ func (s *Server) handleWebhookPostRequest(res http.ResponseWriter, req *http.Req
 	}
 	defer req.Body.Close()
 
-	event := &WebhookEvent{
+	event := &twitch.WebhookEvent{
 		Topic:       webhookTopic,
 		TopicValues: webhookTopicValues,
 		Payload:     string(body),

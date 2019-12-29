@@ -7,22 +7,17 @@ import (
 	"os"
 	"time"
 
-	"github.com/chatstatz/webhooks/internal"
+	"github.com/chatstatz/webhooks/internal/context"
 	"github.com/urfave/negroni"
 )
 
 // Server ...
 type Server struct {
-	ctx *internal.Context
+	ctx *context.Context
 }
 
-// // IServer ...
-// type IServer interface {
-// 	ListenAndServe() error
-// }
-
 // NewServer creates a new HTTP server.
-func NewServer(ctx *internal.Context, host, port string) *http.Server {
+func NewServer(ctx *context.Context, host, port string) *http.Server {
 	server := &Server{ctx}
 	mux := http.NewServeMux()
 
