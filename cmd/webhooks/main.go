@@ -77,12 +77,14 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 
-	conn, err := natsc.Connect(NatsHostDefault, natsc.Timeout(3*time.Second))
+	logger.Debug(EnvNatsHost)
+
+	conn, err := natsc.Connect(EnvNatsHost, natsc.Timeout(3*time.Second))
 	if err != nil {
 		logger.Fatalf("Failed to estasblish a connection to NATS: %s", err.Error())
 	}
 
-	producer := nats.NewProducer(conn, NatsPortDefault)
+	producer := nats.NewProducer(conn, EnvNatsQueue)
 	ctx := context.NewContext(logger, producer)
 
 	httpServer := http.NewServer(ctx, EnvWebhooksHost, EnvWebhooksPort)
