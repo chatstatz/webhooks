@@ -36,3 +36,7 @@ make install                    Install dependencies
 make test                       Run tests
 make build                      Build chatstatz-webhooks server
 ```
+
+## License
+
+This repository is distributed under the terms of the [MIT](LICENSE) License.
