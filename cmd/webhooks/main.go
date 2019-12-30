@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net"
 	"os"
 	"os/signal"
 	"strings"
@@ -77,9 +78,9 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 
-	logger.Debug(EnvNatsHost)
-
-	conn, err := natsc.Connect(EnvNatsHost, natsc.Timeout(3*time.Second))
+	logger.Debugf("NATS Host: %s", EnvNatsHost)
+	logger.Debugf("NATS Port: %s", EnvNatsPort)
+	conn, err := natsc.Connect(net.JoinHostPort(EnvNatsHost, EnvNatsPort), natsc.Timeout(3*time.Second))
 	if err != nil {
 		logger.Fatalf("Failed to estasblish a connection to NATS: %s", err.Error())
 	}
