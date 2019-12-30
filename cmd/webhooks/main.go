@@ -75,11 +75,11 @@ func main() {
 		printEnvVars()
 	}
 
+	logger.Debugf("Starting webhooks server on %s:%s", EnvWebhooksHost, EnvWebhooksPort)
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 
-	logger.Debugf("NATS Host: %s", EnvNatsHost)
-	logger.Debugf("NATS Port: %s", EnvNatsPort)
 	conn, err := natsc.Connect(net.JoinHostPort(EnvNatsHost, EnvNatsPort), natsc.Timeout(3*time.Second))
 	if err != nil {
 		logger.Fatalf("Failed to estasblish a connection to NATS: %s", err.Error())
