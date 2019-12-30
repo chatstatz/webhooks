@@ -9,13 +9,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/chatstatz/logger"
 	"github.com/chatstatz/webhooks/internal"
 	"github.com/chatstatz/webhooks/internal/context"
 	"github.com/chatstatz/webhooks/internal/http"
 	"github.com/chatstatz/webhooks/internal/nats"
-	"github.com/chatstatz/webhooks/tools"
 
+	"github.com/chatstatz/logger"
+	"github.com/chatstatz/util"
 	natsc "github.com/nats-io/nats.go"
 )
 
@@ -37,12 +37,12 @@ var (
 
 // Environment variables
 var (
-	EnvWebhooksHost = tools.GetEnv("WEBHOOKS_HOST", WebhooksHostDefault)
-	EnvWebhooksPort = tools.GetEnv("WEBHOOKS_PORT", WebhooksPortDefault)
-	EnvNatsHost     = tools.GetEnv("NATS_HOST", NatsHostDefault)
-	EnvNatsPort     = tools.GetEnv("NATS_PORT", NatsPortDefault)
-	EnvNatsQueue    = tools.GetEnv("NATS_QUEUE", NatsQueueDefault)
-	EnvLogLevel     = tools.GetEnv("LOG_LEVEL", LogLevelDefault)
+	EnvWebhooksHost = util.GetEnv("WEBHOOKS_HOST", WebhooksHostDefault)
+	EnvWebhooksPort = util.GetEnv("WEBHOOKS_PORT", WebhooksPortDefault)
+	EnvNatsHost     = util.GetEnv("NATS_HOST", NatsHostDefault)
+	EnvNatsPort     = util.GetEnv("NATS_PORT", NatsPortDefault)
+	EnvNatsQueue    = util.GetEnv("NATS_QUEUE", NatsQueueDefault)
+	EnvLogLevel     = util.GetEnv("LOG_LEVEL", LogLevelDefault)
 )
 
 var usageHelp = `
