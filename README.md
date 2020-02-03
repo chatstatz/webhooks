@@ -3,6 +3,8 @@
 The webhooks service listens for subscribed Twitch webhook events and
 pushes event payloads to the NATS message queue.
 
+![CI/CD](https://github.com/chatstatz/webhooks/workflows/CI/CD/badge.svg)
+
 ## Environment Variables
 
 This application uses environment variables for configurations.
