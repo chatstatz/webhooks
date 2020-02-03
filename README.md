@@ -26,15 +26,15 @@ Below are all expected variables and their default values.
 
 ### CI Pipeline
 
-For continuous integration (CI) this project uses [Cloud Build](https://cloud.google.com/cloud-build/).
+For continuous integration (CI) this project uses [GitHub Actions](https://github.com/chatstatz/webhooks/actions).
 The build pipeline will run tests and publish Docker images to [GCR](https://cloud.google.com/container-registry/).
 
 ### Make Commands
 
 ```txt
-make install                    Install dependencies
-make test                       Run tests
-make build                      Build chatstatz-webhooks server
+make install      Install dependencies
+make test         Run tests
+make build        Build chatstatz-webhooks server
 ```
 
 ## License

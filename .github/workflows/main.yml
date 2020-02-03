@@ -1,0 +1,38 @@
+name: CI/CD
+
+on:
+  - push
+
+env:
+  GCP_CONTAINER_HOST: gcr.io
+  GCP_PROJECT_ID: chatstatz-control
+  GCP_IMAGE_NAME: chatstatz-webhooks
+
+jobs:
+  ci_cd:
+    name: CI/CD
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install gcloud SDK
+        run: |
+          curl https://sdk.cloud.google.com > install.sh
+          bash install.sh --disable-prompts
+
+      - name: Activate Service Account
+        run: |
+          echo "$GCP_AUTH" | base64 --decode > "${PWD}/gcloud.json"
+          sh -c "gcloud auth activate-service-account --key-file=${PWD}/gcloud.json"
+        env:
+          GCP_AUTH: ${{ secrets.GCP_CONTROL_DEPLOYER_SA_KEY }}
+
+      - name: Configure Container Registry
+        run: gcloud auth configure-docker --quiet
+
+      - name: Build and test
+        run: .github/scripts/build_and_test.sh
+
+      - name: Publish to Container Registry
+        run: .github/scripts/publish_docker_image.sh
