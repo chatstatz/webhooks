@@ -20,8 +20,8 @@ import (
 )
 
 // Application info
-const (
-	version = "0.1.0"
+var (
+	version = "undefined"
 	appName = "chatstatz-webhooks"
 )
 
@@ -110,7 +110,7 @@ func usage() {
 }
 
 func printVersion() {
-	fmt.Printf("%s v%s\n", appName, version)
+	fmt.Printf("%s %s\n", appName, version)
 	os.Exit(0)
 }
 

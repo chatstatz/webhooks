@@ -1,15 +1,14 @@
 .SILENT:;
-.PHONY: default install test build
+.PHONY: install test build
 
-default:
-	echo "TODO..."
+RELEASE_VERSION:=$(shell git describe --always --long --dirty)
 
 install:
 	CGO_ENABLED=0 go get ./...
 
 build:
-	rm -rf build
-	CGO_ENABLED=0 GOOS=linux go build -o build/chatstatz-webhooks ./cmd/webhooks
+	rm -rf build/ && \
+	CGO_ENABLED=1 GOOS=linux go build -i -v -ldflags "-w -s -X main.version=${RELEASE_VERSION}" -o build/chatstatz-webhooks ./cmd/webhooks
 
 test:
 	CGO_ENABLED=1 go test -race -covermode=atomic ./...
