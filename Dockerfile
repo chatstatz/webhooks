@@ -12,4 +12,3 @@ RUN apk --no-cache add ca-certificates bash
 WORKDIR /app
 COPY --from=builder /app/build/chatstatz-webhooks .
 ENTRYPOINT [ "./chatstatz-webhooks" ]
-CMD [ "--help" ]
