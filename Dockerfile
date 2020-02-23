@@ -1,16 +1,15 @@
 ARG GO_VERSION=1.13
 
 FROM golang:${GO_VERSION} as builder
-WORKDIR /webhooks
+WORKDIR /app
 COPY . ./
 RUN make install
 RUN make test
 RUN make build
 
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-RUN mkdir -p /app
+RUN apk --no-cache add ca-certificates bash
 WORKDIR /app
-COPY --from=builder /webhooks/build/chatstatz-webhooks .
+COPY --from=builder /app/build/chatstatz-webhooks .
 ENTRYPOINT [ "./chatstatz-webhooks" ]
 CMD [ "--help" ]

@@ -31,12 +31,11 @@ Below are all expected variables and their default values.
 For continuous integration (CI) this project uses [GitHub Actions](https://github.com/chatstatz/webhooks/actions).
 The build pipeline will run tests and publish Docker images to [GCR](https://cloud.google.com/container-registry/).
 
-### Make Commands
+### Running Locally
 
-```txt
-make install      Install dependencies
-make test         Run tests
-make build        Build chatstatz-webhooks server
+```bash
+docker build --no-cache -t chatstatz-webhooks .
+docker run --rm -p 8080:8080 chatstatz-webhooks
 ```
 
 ## License

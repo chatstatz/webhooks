@@ -8,7 +8,7 @@ install:
 
 build:
 	rm -rf build/ && \
-	CGO_ENABLED=1 GOOS=linux go build -i -v -ldflags "-w -s -X main.version=${RELEASE_VERSION}" -o build/chatstatz-webhooks ./cmd/webhooks
+	CGO_ENABLED=0 GOOS=linux go build -i -v -ldflags "-w -s -X main.version=${RELEASE_VERSION}" -o build/chatstatz-webhooks ./cmd/webhooks
 
 test:
-	CGO_ENABLED=1 go test -race -covermode=atomic ./...
+	CGO_ENABLED=0 go test -covermode=atomic ./...
