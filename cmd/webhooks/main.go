@@ -75,8 +75,6 @@ func main() {
 		printEnvVars()
 	}
 
-	logger.Debugf("Starting webhooks server on %s:%s", EnvWebhooksHost, EnvWebhooksPort)
-
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 
